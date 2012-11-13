@@ -12,21 +12,19 @@ var BeerRouter = Backbone.Router.extend({
 
 var BeerView = Backbone.View.extend({
   events: {
-            "click" : "eventTest"
+            "click button" : "eventTest"
           },
   eventTest: function() {
                 alert('Ride like the wind!');
               },
   initialize: function() { 
-              $('#main').append("<p class='beerclass'>I'm a beer view!</p>");
+              $('#main').append("<button type='button'>button!</button><p class='beerclass'>I'm a beer view!</p>");
               }
 
 });
 //model
 
 //collection
-
-//view
 
 //template? (should be in another file)  
 
