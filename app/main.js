@@ -1,4 +1,3 @@
-//routes
 var BeerRouter = Backbone.Router.extend({
   routes: {
     "": "index"
@@ -8,40 +7,57 @@ var BeerRouter = Backbone.Router.extend({
     var bv = new BeerView();
     $('#main').append(bv.$el);
     bv.render();
-    console.log('index route achieved');
   }
 });
 
-var BeerView = Backbone.View.extend({
-  $el: $(this.el),
+var Beer = Backbone.Model.extend({
+  url: '/beer'  
+});
 
+var Beers = Backbone.Collection.extend({
+  model: Beer
+});
+var AddBeerView = Backbone.View.extend({
+
+  //$el: $(this.el),
   events: {
-    "click #button2" : "eventTest"
-  },
-
-  eventTest: function() {
-    alert('Ride like the wind!');
-  },
-
-  render: function() {
-    this.$el.append("<button type='button' id='button2'>button!</button><p class='beerclass'>I'm a beer view!</p>");
-    return this;
+    "click #button2": "addBeer"
   },
 
   initialize: function() { 
-    _.bindAll(this, 'render');
+    this.collection.on("add", this.clearInput, this);
+  },
+
+  addBeer: function(e) {
+    e.preventDefault();
+
+    this.collection.create({ text: this.$('textarea').val() });
+  },
+
+  clearInput: function() {
+    this.$('textarea').val('');
+  },
+
+});
+
+var BeerView = Backbone.View.extend({
+
+  initialize: function() {
+    this.collection.on('add', this.appendBeer, this);
+  },
+
+  appendBeer: function(beer) {
+    $('#wall').append('<p id=' + beer.cid + '>' + beer.escape('text') + '</p>');
   }
 
 });
-//model
 
-//collection
 
-//template? (should be in another file)  
 
 $(document).ready(function() {
   //start it up here!
-  var router = new BeerRouter();
-  Backbone.history.start();
-  //bv.initialize();
+  var beers = new Beers();
+  new AddBeerView({ el: $('#new'), collection: beers });
+  new BeerView({ el: $('#wall'), collection: beers });
+  
 });
