@@ -4,7 +4,7 @@ var BeerRouter = Backbone.Router.extend({
   },
 
   index: function() {
-    var bv = new BeerView();
+    var bv = new BeerWallView();
     $('#main').append(bv.$el);
     bv.render();
   }
@@ -17,7 +17,7 @@ var Beer = Backbone.Model.extend({
 var Beers = Backbone.Collection.extend({
   model: Beer
 });
-var AddBeerView = Backbone.View.extend({
+var AddBeerWallView = Backbone.View.extend({
 
   //$el: $(this.el),
   events: {
@@ -40,14 +40,31 @@ var AddBeerView = Backbone.View.extend({
 
 });
 
+
 var BeerView = Backbone.View.extend({
+  events: {
+    "click" : "dissaBEER"
+  },
+
+  render: function() {
+    $(this.el).html('<div style="float:left"><img src="/assets/images/beer.png" /></div>');
+    return this;
+  },
+  dissaBEER: function() {
+    this.remove();
+
+  }
+});
+
+var BeerWallView = Backbone.View.extend({
 
   initialize: function() {
     this.collection.on('add', this.appendBeer, this);
   },
 
-  appendBeer: function(beer) {
-    $('#wall').append('<p id=' + beer.cid + '>' + beer.escape('text') + '</p>');
+  appendBeer: function() {
+    var beerBeer = new BeerView();
+    $(this.el).append(beerBeer.render().el);
   }
 
 });
@@ -57,7 +74,6 @@ var BeerView = Backbone.View.extend({
 $(document).ready(function() {
   //start it up here!
   var beers = new Beers();
-  new AddBeerView({ el: $('#new'), collection: beers });
-  new BeerView({ el: $('#wall'), collection: beers });
-  
+  new AddBeerWallView({ el: $('#new'), collection: beers });
+  new BeerWallView({ el: $('#wall'), collection: beers });
 });
